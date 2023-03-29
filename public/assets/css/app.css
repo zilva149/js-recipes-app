@@ -24,7 +24,7 @@ body *,
 
 html {
   min-height: 100vh;
-  padding: 1rem 0;
+  padding: 4rem 0;
   font-family: "Montserrat", sans-serif;
   font-size: 10px;
   color: var(--font-primary);
