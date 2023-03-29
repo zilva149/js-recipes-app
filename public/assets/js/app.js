@@ -82,11 +82,13 @@ const appendSearch = debounce(async (term) => {
       if (e.currentTarget.classList.contains("fa-regular")) {
         const id = e.currentTarget.closest(".recipe").id;
         appendFav(id);
+        addToLS(id);
         e.currentTarget.classList.remove("fa-regular");
         e.currentTarget.classList.add("fa-solid");
       } else {
         const id = e.currentTarget.closest(".recipe").id;
         removeFav(id);
+        removeFromLS(id);
         e.currentTarget.classList.remove("fa-solid");
         e.currentTarget.classList.add("fa-regular");
       }
@@ -135,7 +137,6 @@ const appendFav = async (id) => {
             <h6>${data[0].strMeal}</h6>`;
 
   favSectionContainer.appendChild(favRecipe);
-  addToLS(id);
 };
 
 // ****** LOCAL STORAGE ******

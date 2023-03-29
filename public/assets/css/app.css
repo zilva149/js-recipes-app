@@ -189,15 +189,6 @@ img {
   }
 }
 
-.snaps-inline {
-  scroll-snap-type: inline mandatory;
-  scroll-padding-inline: 1.5rem;
-}
-
-.snaps-inline > * {
-  scroll-snap-align: start;
-}
-
 /* Hide scrollbar for Chrome, Safari and Opera */
 .fav-section .container::-webkit-scrollbar {
   display: none;
@@ -223,6 +214,10 @@ img {
   border-radius: 50%;
   overflow: hidden;
   box-shadow: var(--box-shadow);
+}
+
+.fav-recipe h6 {
+  text-align: center;
 }
 
 /* FAV SECTION GO LEFT-RIGHT BUTTONS */
