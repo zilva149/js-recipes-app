@@ -299,8 +299,20 @@ img {
 
 /* RECIPE OF THE DAY */
 
+.recipe-random-section {
+  margin-top: 2rem;
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+}
+
 .recipe-of-the-day {
   position: relative;
+}
+
+.recipe-of-the-day img {
+  height: 240px;
 }
 
 .recipe-of-the-day::before {
@@ -341,4 +353,8 @@ img {
 
 .recipe-show-random.hidden {
   display: none;
+}
+
+.empty-list {
+  font-size: 2rem;
 }

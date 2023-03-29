@@ -46,7 +46,17 @@ const appendSearchResult = debounce(async (term) => {
 
   let HTML = "";
 
-  if (data && term !== "") {
+  if (term === "") {
+    HTML += `
+        <div class="empty-list">
+            <span>Enter input to search for your favorite recipes.</span>
+        </div>`;
+  } else if (!data) {
+    HTML += `
+        <div class="empty-list">
+            <span>No recipes found.</span>
+        </div>`;
+  } else {
     for (const recipe of data) {
       HTML += `
             <article class="recipe" id="${recipe.idMeal}">
@@ -61,14 +71,6 @@ const appendSearchResult = debounce(async (term) => {
                 </div>
             </article>`;
     }
-  } else {
-    HTML += `
-        <article class="recipe">
-          <div class="recipe-show-random" id="btn-show-random">
-            <span>Recipe of the day</span>
-          </div>
-          <div class="recipe-of-the-day hidden" id="recipe-of-the-day"></div>
-        </article>`;
   }
 
   recipesSection.innerHTML = HTML;
