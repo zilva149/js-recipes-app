@@ -162,23 +162,27 @@ img {
 .fav-section {
   position: relative;
   padding: 3rem 0;
+  background-color: #eef5fb;
+}
+
+.fav-section .container {
+  width: 100%;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 29%;
   gap: 0.5rem;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
-  background-color: #eef5fb;
 }
 
 @media screen and (min-width: 500px) {
-  .fav-section {
+  .fav-section .container {
     grid-auto-columns: 21%;
   }
 }
 
 @media screen and (min-width: 568px) {
-  .fav-section {
+  .fav-section .container {
     grid-auto-columns: 17%;
   }
 }
@@ -193,12 +197,12 @@ img {
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.fav-section::-webkit-scrollbar {
+.fav-section .container::-webkit-scrollbar {
   display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.fav-section {
+.fav-section .container {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
