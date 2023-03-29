@@ -162,7 +162,7 @@ img {
 .fav-section {
   position: relative;
   padding: 3rem 0;
-  background-color: #eef5fb;
+  background-color: #eff3ff;
 }
 
 .fav-section .container {
@@ -270,11 +270,21 @@ img {
   box-shadow: var(--box-shadow);
 }
 
+.recipe img {
+  height: 240px;
+}
+
 .recipe-footer {
   padding: 2rem;
+  text-transform: capitalize;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.recipe-footer h5 {
+  width: 80%;
+  line-height: 2.2rem;
 }
 
 .recipe-footer i {
