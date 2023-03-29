@@ -21,6 +21,18 @@ const apiUrlID = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=";
 const btnShowRandom = document.getElementById("btn-show-random");
 const recipeOfTheDay = document.getElementById("recipe-of-the-day");
 const recipesSection = document.getElementById("recipes-section");
+const searchInput = document.getElementById("search");
+
+const debounce = (cb, delay = 1500) => {
+  let timeout;
+
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      cb(...args);
+    }, delay);
+  };
+};
 
 const fetchRecipes = async (url, text = "") => {
   const resp = await fetch(url + text);
@@ -28,6 +40,39 @@ const fetchRecipes = async (url, text = "") => {
 
   return data.meals;
 };
+
+const appendSearchResult = debounce(async (term) => {
+  const data = await fetchRecipes(apiUrlSearch, term);
+
+  let HTML = "";
+
+  if (data && term !== "") {
+    for (const recipe of data) {
+      HTML += `
+            <article class="recipe" id="${recipe.idMeal}">
+                <img src="${recipe.strMealThumb}" alt="${recipe.strMeal}" />
+                <div class="recipe-footer">
+                    <h5>${recipe.strMeal}</h5>
+                    <i class="fa-regular fa-heart" title="add to favorites"></i>
+                    <i
+                    class="fa-solid fa-heart hidden"
+                    title="remove from favorites"
+                    ></i>
+                </div>
+            </article>`;
+    }
+  } else {
+    HTML += `
+        <article class="recipe">
+          <div class="recipe-show-random" id="btn-show-random">
+            <span>Recipe of the day</span>
+          </div>
+          <div class="recipe-of-the-day hidden" id="recipe-of-the-day"></div>
+        </article>`;
+  }
+
+  recipesSection.innerHTML = HTML;
+});
 
 btnShowRandom.addEventListener("click", async () => {
   let data = await fetchRecipes(apiUrlRandom);
@@ -48,4 +93,8 @@ btnShowRandom.addEventListener("click", async () => {
                 title="remove from favorites"
               ></i>
             </div>`;
+});
+
+searchInput.addEventListener("input", (e) => {
+  appendSearchResult(e.currentTarget.value);
 });

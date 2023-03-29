@@ -16,7 +16,13 @@
         <a href="./index.html" class="logo">
           <img src="./assets/img/logo.png" alt="logo" />
         </a>
-        <input class="search" type="text" placeholder="Search for recipes..." />
+        <input
+          class="search"
+          id="search"
+          type="text"
+          placeholder="Search for recipes..."
+          autocomplete="off"
+        />
       </header>
 
       <section class="fav-section">
@@ -35,34 +41,12 @@
         </div>
       </section>
 
-      <section class="recipes-section container">
+      <section class="recipes-section container" id="recipes-section">
         <article class="recipe">
           <div class="recipe-show-random" id="btn-show-random">
             <span>Recipe of the day</span>
           </div>
           <div class="recipe-of-the-day hidden" id="recipe-of-the-day"></div>
-        </article>
-        <article class="recipe">
-          <img src="./assets/img/pancakes.jpg" alt="recipe" />
-          <div class="recipe-footer">
-            <h5>Pancakes</h5>
-            <i class="fa-regular fa-heart" title="add to favorites"></i>
-            <i
-              class="fa-solid fa-heart hidden"
-              title="remove from favorites"
-            ></i>
-          </div>
-        </article>
-        <article class="recipe">
-          <img src="./assets/img/pancakes.jpg" alt="recipe" />
-          <div class="recipe-footer">
-            <h5>Pancakes</h5>
-            <i class="fa-regular fa-heart" title="add to favorites"></i>
-            <i
-              class="fa-solid fa-heart hidden"
-              title="remove from favorites"
-            ></i>
-          </div>
         </article>
       </section>
     </main>
