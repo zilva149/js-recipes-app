@@ -8,7 +8,7 @@
     <!-- styles -->
     <link rel="stylesheet" href="./assets/css/app.css" />
     <!-- scripts -->
-    <script src="./assets/js/app.js" defer></script>
+    <script type="module" src="./assets/js/app.js" defer></script>
   </head>
   <body>
     <main class="app">
@@ -31,21 +31,14 @@
           class="btn-scroll fa-solid fa-chevron-right"
           id="btn-scroll-right"
         ></i>
-        <div class="container snaps-inline" id="fav-section-container">
-          <div class="fav-recipe">
-            <div class="img">
-              <img src="./assets/img/pancakes.jpg" alt="food" />
-            </div>
-            <h6>Chicken</h6>
-          </div>
-        </div>
+        <div class="container snaps-inline" id="fav-section-container"></div>
       </section>
 
       <section class="recipe-random-section container">
         <div class="recipe-show-random" id="btn-show-random">
           <span>Recipe of the day</span>
         </div>
-        <div class="recipe-of-the-day hidden" id="recipe-of-the-day"></div>
+        <article class="recipe recipe-of-the-day hidden"></article>
       </section>
 
       <section class="recipes-section container" id="recipes-section"></section>

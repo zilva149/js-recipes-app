@@ -1,29 +1,29 @@
 // ******* FAVORITE SECTION SCROLL ********
 
-const FavSectionContainer = document.getElementById("fav-section-container");
+const favSectionContainer = document.getElementById("fav-section-container");
 const btnScrollLeft = document.getElementById("btn-scroll-left");
 const btnScrollRight = document.getElementById("btn-scroll-right");
 
 btnScrollRight.addEventListener("click", () => {
-  FavSectionContainer.scrollLeft += 300;
+  favSectionContainer.scrollLeft += 300;
 });
 
 btnScrollLeft.addEventListener("click", () => {
-  FavSectionContainer.scrollLeft -= 300;
+  favSectionContainer.scrollLeft -= 300;
 });
 
-// ****** APP ******
+// ****** RECIPES ******
 
 const apiUrlRandom = "https://www.themealdb.com/api/json/v1/1/random.php";
 const apiUrlSearch = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
 const apiUrlID = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=";
 
 const btnShowRandom = document.getElementById("btn-show-random");
-const recipeOfTheDay = document.getElementById("recipe-of-the-day");
+const recipeOfTheDay = document.querySelector(".recipe-of-the-day");
 const recipesSection = document.getElementById("recipes-section");
 const searchInput = document.getElementById("search");
 
-const debounce = (cb, delay = 1500) => {
+const debounce = (cb, delay = 1000) => {
   let timeout;
 
   return (...args) => {
@@ -41,7 +41,7 @@ const fetchRecipes = async (url, text = "") => {
   return data.meals;
 };
 
-const appendSearchResult = debounce(async (term) => {
+const appendSearch = debounce(async (term) => {
   const data = await fetchRecipes(apiUrlSearch, term);
 
   let HTML = "";
@@ -74,29 +74,103 @@ const appendSearchResult = debounce(async (term) => {
   }
 
   recipesSection.innerHTML = HTML;
+
+  const favBtns = recipesSection.querySelectorAll(".fa-heart");
+
+  favBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      if (e.currentTarget.classList.contains("fa-regular")) {
+        const id = e.currentTarget.closest(".recipe").id;
+        appendFav(id);
+        e.currentTarget.classList.remove("fa-regular");
+        e.currentTarget.classList.add("fa-solid");
+      } else {
+        const id = e.currentTarget.closest(".recipe").id;
+        removeFav(id);
+        e.currentTarget.classList.remove("fa-solid");
+        e.currentTarget.classList.add("fa-regular");
+      }
+    });
+  });
 });
 
-btnShowRandom.addEventListener("click", async () => {
+const appendRandom = async () => {
   let data = await fetchRecipes(apiUrlRandom);
-  data = data[0];
 
   btnShowRandom.classList.add("hidden");
   recipeOfTheDay.classList.remove("hidden");
 
-  recipeOfTheDay.id = data.idMeal;
+  recipeOfTheDay.id = data[0].idMeal;
 
   recipeOfTheDay.innerHTML = `
-            <img src="${data.strMealThumb}" alt="${data.strMeal}" />
+            <img src="${data[0].strMealThumb}" alt="${data[0].strMeal}" />
             <div class="recipe-footer">
-              <h5>${data.strMeal}</h5>
+              <h5>${data[0].strMeal}</h5>
               <i class="fa-regular fa-heart" title="add to favorites"></i>
               <i
                 class="fa-solid fa-heart hidden"
                 title="remove from favorites"
               ></i>
             </div>`;
+};
+
+btnShowRandom.addEventListener("click", () => {
+  appendRandom();
 });
 
 searchInput.addEventListener("input", (e) => {
-  appendSearchResult(e.currentTarget.value);
+  appendSearch(e.currentTarget.value);
+});
+
+const appendFav = async (id) => {
+  const data = await fetchRecipes(apiUrlID + id);
+
+  const favRecipe = document.createElement("div");
+  favRecipe.classList.add("fav-recipe");
+  favRecipe.id = id;
+  favRecipe.innerHTML = `
+            <div class="img">
+              <img src="${data[0].strMealThumb}" alt="${data[0].strMeal}" />
+            </div>
+            <h6>${data[0].strMeal}</h6>`;
+
+  favSectionContainer.appendChild(favRecipe);
+  addToLS(id);
+};
+
+// ****** LOCAL STORAGE ******
+
+const fetchFromLS = () => {
+  const values = JSON.parse(localStorage.getItem("recipeIDs"));
+
+  if (values) {
+    for (const value of values) {
+      appendFav(value);
+    }
+  }
+};
+
+const addToLS = (id) => {
+  let values;
+
+  if (!localStorage.getItem("recipeIDs")) {
+    values = [];
+  } else {
+    values = JSON.parse(localStorage.getItem("recipeIDs"));
+  }
+
+  values.push(id);
+
+  localStorage.setItem("recipeIDs", JSON.stringify(values));
+};
+
+const removeFromLS = (id) => {
+  let values = JSON.parse(localStorage.getItem("recipeIDs"));
+  const newValues = values.filter((value) => value !== id);
+
+  localStorage.setItem("recipeIDs", JSON.stringify(newValues));
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+  fetchFromLS();
 });

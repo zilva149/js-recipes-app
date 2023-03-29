@@ -311,10 +311,6 @@ img {
   position: relative;
 }
 
-.recipe-of-the-day img {
-  height: 240px;
-}
-
 .recipe-of-the-day::before {
   content: "Recipe of the day";
   font-size: 1.5rem;
