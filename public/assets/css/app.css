@@ -166,6 +166,7 @@ img {
 }
 
 .fav-section .container {
+  padding: 0 2rem;
   width: 100%;
   display: grid;
   grid-auto-flow: column;
@@ -173,17 +174,18 @@ img {
   gap: 0.5rem;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
+  scroll-behavior: smooth;
 }
 
 @media screen and (min-width: 500px) {
   .fav-section .container {
-    grid-auto-columns: 21%;
+    grid-auto-columns: 23%;
   }
 }
 
 @media screen and (min-width: 568px) {
   .fav-section .container {
-    grid-auto-columns: 17%;
+    grid-auto-columns: 18%;
   }
 }
 
@@ -228,8 +230,8 @@ img {
 .fav-section .btn-scroll {
   position: absolute;
   top: 50%;
-  height: 40px;
-  width: 40px;
+  height: 35px;
+  width: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -252,10 +254,6 @@ img {
 .fav-section .btn-scroll:hover {
   color: #fff;
   background-color: var(--font-primary);
-}
-
-.fav-section .btn-scroll.hidden {
-  display: none;
 }
 
 /* RECIPES */

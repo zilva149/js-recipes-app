@@ -8,7 +8,7 @@
     <!-- styles -->
     <link rel="stylesheet" href="./assets/css/app.css" />
     <!-- scripts -->
-    <script src="./assets/js/app.js"></script>
+    <script src="./assets/js/app.js" defer></script>
   </head>
   <body>
     <main class="app">
@@ -19,16 +19,43 @@
         <input class="search" type="text" placeholder="Search for recipes..." />
       </header>
 
-      <section class="fav-section" id="fav-section">
-        <i
-          class="btn-scroll fa-solid fa-chevron-left hidden"
-          id="btn-scroll-left"
-        ></i>
+      <section class="fav-section">
+        <i class="btn-scroll fa-solid fa-chevron-left" id="btn-scroll-left"></i>
         <i
           class="btn-scroll fa-solid fa-chevron-right"
           id="btn-scroll-right"
         ></i>
-        <div class="container snaps-inline">
+        <div class="container snaps-inline" id="fav-section-container">
+          <div class="fav-recipe">
+            <div class="img">
+              <img src="./assets/img/pancakes.jpg" alt="food" />
+            </div>
+            <h6>Chicken</h6>
+          </div>
+          <div class="fav-recipe">
+            <div class="img">
+              <img src="./assets/img/pancakes.jpg" alt="food" />
+            </div>
+            <h6>Chicken</h6>
+          </div>
+          <div class="fav-recipe">
+            <div class="img">
+              <img src="./assets/img/pancakes.jpg" alt="food" />
+            </div>
+            <h6>Chicken</h6>
+          </div>
+          <div class="fav-recipe">
+            <div class="img">
+              <img src="./assets/img/pancakes.jpg" alt="food" />
+            </div>
+            <h6>Chicken</h6>
+          </div>
+          <div class="fav-recipe">
+            <div class="img">
+              <img src="./assets/img/pancakes.jpg" alt="food" />
+            </div>
+            <h6>Chicken</h6>
+          </div>
           <div class="fav-recipe">
             <div class="img">
               <img src="./assets/img/pancakes.jpg" alt="food" />
