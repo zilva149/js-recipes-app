@@ -71,7 +71,20 @@ const appendSearch = debounce(async (term) => {
 
   recipesSection.innerHTML = HTML;
 
+  const recipes = recipesSection.querySelectorAll(".recipe");
   const favBtns = recipesSection.querySelectorAll(".fa-heart");
+
+  const dataLS = fetchFromLS();
+
+  for (const favID of dataLS) {
+    for (const recipe of recipes) {
+      if (recipe.id === favID) {
+        const btn = recipe.querySelector(".fa-heart");
+        btn.classList.remove("fa-regular");
+        btn.classList.add("fa-solid");
+      }
+    }
+  }
 
   favBtns.forEach((btn) => {
     btn.addEventListener("click", (e) => {
@@ -107,24 +120,31 @@ const appendRandom = async () => {
               <i class="fa-regular fa-heart"></i>
             </div>`;
 
-  const favBtns = recipeOfTheDay.querySelectorAll(".fa-heart");
+  const favBtn = recipeOfTheDay.querySelector(".fa-heart");
 
-  favBtns.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      if (e.currentTarget.classList.contains("fa-regular")) {
-        const id = e.currentTarget.closest(".recipe").id;
-        appendFav(id);
-        addToLS(id);
-        e.currentTarget.classList.remove("fa-regular");
-        e.currentTarget.classList.add("fa-solid");
-      } else {
-        const id = e.currentTarget.closest(".recipe").id;
-        removeFromFav(id);
-        removeFromLS(id);
-        e.currentTarget.classList.remove("fa-solid");
-        e.currentTarget.classList.add("fa-regular");
-      }
-    });
+  const dataLS = fetchFromLS();
+
+  for (const favID of dataLS) {
+    if (favID === data[0].idMeal) {
+      favBtn.classList.remove("fa-regular");
+      favBtn.classList.add("fa-solid");
+    }
+  }
+
+  favBtn.addEventListener("click", (e) => {
+    if (e.currentTarget.classList.contains("fa-regular")) {
+      const id = e.currentTarget.closest(".recipe").id;
+      appendFav(id);
+      addToLS(id);
+      e.currentTarget.classList.remove("fa-regular");
+      e.currentTarget.classList.add("fa-solid");
+    } else {
+      const id = e.currentTarget.closest(".recipe").id;
+      removeFromFav(id);
+      removeFromLS(id);
+      e.currentTarget.classList.remove("fa-solid");
+      e.currentTarget.classList.add("fa-regular");
+    }
   });
 };
 
@@ -194,11 +214,7 @@ const removeFromRecipes = (id) => {
 const fetchFromLS = () => {
   const values = JSON.parse(localStorage.getItem("recipeIDs"));
 
-  if (values) {
-    for (const value of values) {
-      appendFav(value);
-    }
-  }
+  return values;
 };
 
 const addToLS = (id) => {
@@ -222,6 +238,16 @@ const removeFromLS = (id) => {
   localStorage.setItem("recipeIDs", JSON.stringify(newValues));
 };
 
+const appendFavFromLS = () => {
+  const values = fetchFromLS();
+
+  if (values) {
+    for (const value of values) {
+      appendFav(value);
+    }
+  }
+};
+
 window.addEventListener("DOMContentLoaded", () => {
-  fetchFromLS();
+  appendFavFromLS();
 });
