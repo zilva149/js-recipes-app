@@ -260,6 +260,11 @@ img {
   background-color: #fff;
   transition: var(--transition);
   z-index: 99;
+  display: none;
+}
+
+.fav-section .btn-scroll.show {
+  display: flex;
 }
 
 .fav-section i.fa-chevron-left {

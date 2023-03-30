@@ -177,6 +177,14 @@ const appendFav = async (id) => {
   });
 
   favSectionContainer.appendChild(favRecipe);
+
+  if (isOverflown(favSectionContainer)) {
+    btnScrollLeft.classList.add("show");
+    btnScrollRight.classList.add("show");
+  } else {
+    btnScrollLeft.classList.remove("show");
+    btnScrollRight.classList.remove("show");
+  }
 };
 
 const removeFromFav = (id) => {
@@ -186,6 +194,14 @@ const removeFromFav = (id) => {
     if (recipe.id === id) {
       favSectionContainer.removeChild(recipe);
     }
+  }
+
+  if (isOverflown(favSectionContainer)) {
+    btnScrollLeft.classList.add("show");
+    btnScrollRight.classList.add("show");
+  } else {
+    btnScrollLeft.classList.remove("show");
+    btnScrollRight.classList.remove("show");
   }
 };
 
@@ -246,6 +262,13 @@ const appendFavFromLS = () => {
       appendFav(value);
     }
   }
+};
+
+const isOverflown = (element) => {
+  return (
+    element.scrollHeight > element.clientHeight ||
+    element.scrollWidth > element.clientWidth
+  );
 };
 
 window.addEventListener("DOMContentLoaded", () => {
