@@ -83,7 +83,7 @@ const appendSearch = debounce(async (term) => {
         e.currentTarget.classList.add("fa-solid");
       } else {
         const id = e.currentTarget.closest(".recipe").id;
-        removeFav(id);
+        removeFromFav(id);
         removeFromLS(id);
         e.currentTarget.classList.remove("fa-solid");
         e.currentTarget.classList.add("fa-regular");
@@ -119,7 +119,7 @@ const appendRandom = async () => {
         e.currentTarget.classList.add("fa-solid");
       } else {
         const id = e.currentTarget.closest(".recipe").id;
-        removeFav(id);
+        removeFromFav(id);
         removeFromLS(id);
         e.currentTarget.classList.remove("fa-solid");
         e.currentTarget.classList.add("fa-regular");
@@ -151,19 +151,40 @@ const appendFav = async (id) => {
 
   const btnRemove = favRecipe.querySelector(".btn-remove");
   btnRemove.addEventListener("click", (e) => {
-    removeFav(id);
+    removeFromFav(id);
+    removeFromRecipes(id);
     removeFromLS(id);
   });
 
   favSectionContainer.appendChild(favRecipe);
 };
 
-const removeFav = (id) => {
+const removeFromFav = (id) => {
   const favRecipes = favSectionContainer.children;
 
   for (const recipe of favRecipes) {
     if (recipe.id === id) {
       favSectionContainer.removeChild(recipe);
+    }
+  }
+};
+
+const removeFromRecipes = (id) => {
+  if (recipeOfTheDay.id === id) {
+    const btn = recipeOfTheDay.querySelector(".fa-heart");
+
+    btn.classList.remove("fa-solid");
+    btn.classList.add("fa-regular");
+  }
+
+  const searchRecipes = recipesSection.children;
+
+  for (const child of searchRecipes) {
+    if (child.id === id) {
+      const btn = child.querySelector(".fa-heart");
+
+      btn.classList.remove("fa-solid");
+      btn.classList.add("fa-regular");
     }
   }
 };
