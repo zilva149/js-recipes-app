@@ -114,6 +114,26 @@ const appendRandom = async () => {
                 title="remove from favorites"
               ></i>
             </div>`;
+
+  const favBtns = recipeOfTheDay.querySelectorAll(".fa-heart");
+
+  favBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      if (e.currentTarget.classList.contains("fa-regular")) {
+        const id = e.currentTarget.closest(".recipe").id;
+        appendFav(id);
+        addToLS(id);
+        e.currentTarget.classList.remove("fa-regular");
+        e.currentTarget.classList.add("fa-solid");
+      } else {
+        const id = e.currentTarget.closest(".recipe").id;
+        removeFav(id);
+        removeFromLS(id);
+        e.currentTarget.classList.remove("fa-solid");
+        e.currentTarget.classList.add("fa-regular");
+      }
+    });
+  });
 };
 
 btnShowRandom.addEventListener("click", () => {
