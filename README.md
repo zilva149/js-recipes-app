@@ -2,8 +2,8 @@
 
 ## Project information
 
-Site published at: to be determined
-Design: https://www.uidesigndaily.com/posts/sketch-recipe-app-food-mobile-day-615
+- Site published at: to be determined
+- Design: https://www.uidesigndaily.com/posts/sketch-recipe-app-food-mobile-day-615
 
 ## Project features
 
