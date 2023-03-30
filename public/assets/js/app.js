@@ -63,11 +63,7 @@ const appendSearch = debounce(async (term) => {
                 <img src="${recipe.strMealThumb}" alt="${recipe.strMeal}" />
                 <div class="recipe-footer">
                     <h5>${recipe.strMeal}</h5>
-                    <i class="fa-regular fa-heart" title="add to favorites"></i>
-                    <i
-                    class="fa-solid fa-heart hidden"
-                    title="remove from favorites"
-                    ></i>
+                    <i class="fa-regular fa-heart"></i>
                 </div>
             </article>`;
     }
@@ -108,11 +104,7 @@ const appendRandom = async () => {
             <img src="${data[0].strMealThumb}" alt="${data[0].strMeal}" />
             <div class="recipe-footer">
               <h5>${data[0].strMeal}</h5>
-              <i class="fa-regular fa-heart" title="add to favorites"></i>
-              <i
-                class="fa-solid fa-heart hidden"
-                title="remove from favorites"
-              ></i>
+              <i class="fa-regular fa-heart"></i>
             </div>`;
 
   const favBtns = recipeOfTheDay.querySelectorAll(".fa-heart");
@@ -151,12 +143,23 @@ const appendFav = async (id) => {
   favRecipe.classList.add("fav-recipe");
   favRecipe.id = id;
   favRecipe.innerHTML = `
+            <i class="btn-remove fa-solid fa-circle-xmark"></i>
             <div class="img">
               <img src="${data[0].strMealThumb}" alt="${data[0].strMeal}" />
             </div>
             <h6>${data[0].strMeal}</h6>`;
 
   favSectionContainer.appendChild(favRecipe);
+};
+
+const removeFav = (id) => {
+  const favRecipes = favSectionContainer.children;
+
+  for (const recipe of favRecipes) {
+    if (recipe.id === id) {
+      favSectionContainer.removeChild(recipe);
+    }
+  }
 };
 
 // ****** LOCAL STORAGE ******

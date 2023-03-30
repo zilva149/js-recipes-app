@@ -161,12 +161,11 @@ img {
 
 .fav-section {
   position: relative;
-  padding: 3rem 0;
   background-color: #eff3ff;
 }
 
 .fav-section .container {
-  padding: 0 2rem;
+  padding: 3rem 2rem;
   width: 100%;
   display: grid;
   grid-auto-flow: column;
@@ -201,10 +200,34 @@ img {
 }
 
 .fav-recipe {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+}
+
+.fav-recipe i {
+  position: absolute;
+  top: -1rem;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  color: var(--red);
+  cursor: pointer;
+  transition: var(--transition);
+  transform: scale(0);
+  z-index: 99;
+}
+
+.fav-recipe i:hover {
+  filter: brightness(110%);
+}
+
+.fav-recipe:hover i {
+  transform: scale(1);
 }
 
 .fav-recipe .img {
@@ -236,6 +259,7 @@ img {
   border-radius: 50%;
   background-color: #fff;
   transition: var(--transition);
+  z-index: 99;
 }
 
 .fav-section i.fa-chevron-left {
