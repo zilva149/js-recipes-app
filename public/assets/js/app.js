@@ -149,6 +149,12 @@ const appendFav = async (id) => {
             </div>
             <h6>${data[0].strMeal}</h6>`;
 
+  const btnRemove = favRecipe.querySelector(".btn-remove");
+  btnRemove.addEventListener("click", (e) => {
+    removeFav(id);
+    removeFromLS(id);
+  });
+
   favSectionContainer.appendChild(favRecipe);
 };
 
