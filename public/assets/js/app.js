@@ -1,4 +1,30 @@
-// ******* FAVORITE SECTION SCROLL ********
+"use strict";
+
+// ****** IMPORTS *******
+
+import {
+  pipe,
+  curry,
+  debounce,
+  fetchRecipes,
+  isOverflown,
+} from "./functions.js";
+
+// ******* FUNCTIONS ********
+
+const getDomElByID = (id) => document.getElementById(`${id}`);
+const getDomElBySel = (selector) => document.querySelector(`${selector}`);
+const getDomEls = (selector) => document.querySelectorAll(`${selector}`);
+
+const createDomEl = (el) => document.createElement(el);
+const addID = (id, el) => (el.id = id);
+const addClass = (name, el) => el.classList.add(name);
+const removeClass = (name, el) => el.classList.remove(name);
+const setAttr = (attr, value, el) => el.setAttribute(attr, value);
+const appendChild = (child, el) => el.appendChild(child);
+const addContent = (content, el) => el.innerHTML(content);
+
+const on = (event, el, fn) => el.addEventListener(event, fn);
 
 const favSectionContainer = document.getElementById("fav-section-container");
 const btnScrollLeft = document.getElementById("btn-scroll-left");
@@ -23,26 +49,8 @@ const recipeOfTheDay = document.querySelector(".recipe-of-the-day");
 const recipesSection = document.getElementById("recipes-section");
 const searchInput = document.getElementById("search");
 
-const debounce = (cb, delay = 1000) => {
-  let timeout;
-
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      cb(...args);
-    }, delay);
-  };
-};
-
-const fetchRecipes = async (url, text = "") => {
-  const resp = await fetch(url + text);
-  const data = await resp.json();
-
-  return data.meals;
-};
-
 const appendSearch = debounce(async (term) => {
-  const data = await fetchRecipes(apiUrlSearch, term);
+  const data = await fetchRecipes(apiUrlSearch + term);
 
   let HTML = "";
 
@@ -262,13 +270,6 @@ const appendFavFromLS = () => {
       appendFav(value);
     }
   }
-};
-
-const isOverflown = (element) => {
-  return (
-    element.scrollHeight > element.clientHeight ||
-    element.scrollWidth > element.clientWidth
-  );
 };
 
 window.addEventListener("DOMContentLoaded", () => {
