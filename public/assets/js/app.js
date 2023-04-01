@@ -1,60 +1,30 @@
 "use strict";
 
-// ****** IMPORTS *******
+// ****** IMPORTS ******
 
-import {
-  pipe,
-  curry,
-  debounce,
-  isOverflown,
-  fetchRecipes,
-  fetchFromLS,
-  addToLS,
-  removeFromLS,
-  appendFavFromLS,
-} from "./functions.js";
+import * as exports from "./functions.js";
+Object.entries(exports).forEach(
+  ([name, exported]) => (window[name] = exported)
+);
 
-// ******* FUNCTIONS ********
+const favSectionContainer = getDomElByID("fav-section-container");
+const btnScrollLeft = getDomElByID("btn-scroll-left");
+const btnScrollRight = getDomElByID("btn-scroll-right");
 
-const getDomElByID = (id) => document.getElementById(`${id}`);
-const getDomElBySel = (selector) => document.querySelector(`${selector}`);
-const getDomEls = (selector) => document.querySelectorAll(`${selector}`);
-
-const createDomEl = (el) => document.createElement(el);
-const addID = curry((id, el) => (el.id = id));
-const addClass = curry((name, el) => el.classList.add(name));
-const removeClass = curry((name, el) => el.classList.remove(name));
-const setAttr = curry((attr, value, el) => el.setAttribute(attr, value));
-const appendChild = curry((child, el) => el.appendChild(child));
-const addContent = curry((content, el) => el.innerHTML(content));
-
-const on = curry((event, el, fn) => el.addEventListener(event, fn));
-
-const favSectionContainer = document.getElementById("fav-section-container");
-const btnScrollLeft = document.getElementById("btn-scroll-left");
-const btnScrollRight = document.getElementById("btn-scroll-right");
-
-btnScrollRight.addEventListener("click", () => {
-  favSectionContainer.scrollLeft += 300;
-});
-
-btnScrollLeft.addEventListener("click", () => {
-  favSectionContainer.scrollLeft -= 300;
-});
+on("click", btnScrollRight, () => (favSectionContainer.scrollLeft += 300));
+on("click", btnScrollLeft, () => (favSectionContainer.scrollLeft -= 300));
 
 // ****** RECIPES ******
 
-const apiUrlRandom = "https://www.themealdb.com/api/json/v1/1/random.php";
-const apiUrlSearch = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
-const apiUrlID = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=";
-
-const btnShowRandom = document.getElementById("btn-show-random");
-const recipeOfTheDay = document.querySelector(".recipe-of-the-day");
-const recipesSection = document.getElementById("recipes-section");
-const searchInput = document.getElementById("search");
+const btnShowRandom = getDomElByID("btn-show-random");
+const recipeOfTheDay = getDomElBySel(".recipe-of-the-day", document);
+const recipesSection = getDomElByID("recipes-section");
+const searchInput = getDomElByID("search");
 
 const appendSearch = debounce(async (term) => {
-  const data = await fetchRecipes(apiUrlSearch + term);
+  const data = await fetchRecipes(
+    "https://www.themealdb.com/api/json/v1/1/search.php?s=" + term
+  );
 
   let HTML = "";
 
@@ -81,10 +51,10 @@ const appendSearch = debounce(async (term) => {
     }
   }
 
-  recipesSection.innerHTML = HTML;
+  addContent(HTML, recipesSection);
 
-  const recipes = recipesSection.querySelectorAll(".recipe");
-  const favBtns = recipesSection.querySelectorAll(".fa-heart");
+  const recipes = getDomEls(".recipe", recipesSection);
+  const favBtns = getDomEls(".fa-heart", recipesSection);
 
   const dataLS = fetchFromLS();
 
@@ -103,7 +73,7 @@ const appendSearch = debounce(async (term) => {
       if (e.currentTarget.classList.contains("fa-regular")) {
         const id = e.currentTarget.closest(".recipe").id;
         const fetchData = fetchFromLS();
-        appendFav(id);
+        appendFavRecipe(id);
         addToLS(id, fetchData);
         e.currentTarget.classList.remove("fa-regular");
         e.currentTarget.classList.add("fa-solid");
@@ -120,7 +90,9 @@ const appendSearch = debounce(async (term) => {
 });
 
 const appendRandom = async () => {
-  let data = await fetchRecipes(apiUrlRandom);
+  let data = await fetchRecipes(
+    "https://www.themealdb.com/api/json/v1/1/random.php"
+  );
 
   btnShowRandom.classList.add("hidden");
   recipeOfTheDay.classList.remove("hidden");
@@ -145,11 +117,11 @@ const appendRandom = async () => {
     }
   }
 
-  favBtn.addEventListener("click", (e) => {
+  favBtn.addEventListener("click", async (e) => {
     if (e.currentTarget.classList.contains("fa-regular")) {
       const id = e.currentTarget.closest(".recipe").id;
       const fetchData = fetchFromLS();
-      appendFav(id);
+      appendFavRecipe(id);
       addToLS(id, fetchData);
       e.currentTarget.classList.remove("fa-regular");
       e.currentTarget.classList.add("fa-solid");
@@ -164,45 +136,13 @@ const appendRandom = async () => {
   });
 };
 
-btnShowRandom.addEventListener("click", () => {
+on("click", btnShowRandom, () => {
   appendRandom();
 });
 
-searchInput.addEventListener("input", (e) => {
+on("input", searchInput, (e) => {
   appendSearch(e.currentTarget.value);
 });
-
-const appendFav = async (id) => {
-  const data = await fetchRecipes(apiUrlID + id);
-
-  const favRecipe = document.createElement("div");
-  favRecipe.classList.add("fav-recipe");
-  favRecipe.id = id;
-  favRecipe.innerHTML = `
-            <i class="btn-remove fa-solid fa-circle-xmark"></i>
-            <div class="img">
-              <img src="${data[0].strMealThumb}" alt="${data[0].strMeal}" />
-            </div>
-            <h6>${data[0].strMeal}</h6>`;
-
-  const btnRemove = favRecipe.querySelector(".btn-remove");
-  btnRemove.addEventListener("click", (e) => {
-    const fetchData = fetchFromLS();
-    removeFromFav(id);
-    removeFromRecipes(id);
-    removeFromLS(id, fetchData);
-  });
-
-  favSectionContainer.appendChild(favRecipe);
-
-  if (isOverflown(favSectionContainer)) {
-    btnScrollLeft.classList.add("show");
-    btnScrollRight.classList.add("show");
-  } else {
-    btnScrollLeft.classList.remove("show");
-    btnScrollRight.classList.remove("show");
-  }
-};
 
 const removeFromFav = (id) => {
   const favRecipes = favSectionContainer.children;
@@ -242,7 +182,7 @@ const removeFromRecipes = (id) => {
   }
 };
 
-window.addEventListener("DOMContentLoaded", () => {
+on("DOMContentLoaded", window, () => {
   const fetchData = fetchFromLS();
   appendFavFromLS(fetchData);
 });
