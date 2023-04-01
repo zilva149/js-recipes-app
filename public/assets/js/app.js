@@ -6,8 +6,12 @@ import {
   pipe,
   curry,
   debounce,
-  fetchRecipes,
   isOverflown,
+  fetchRecipes,
+  fetchFromLS,
+  addToLS,
+  removeFromLS,
+  appendFavFromLS,
 } from "./functions.js";
 
 // ******* FUNCTIONS ********
@@ -17,14 +21,14 @@ const getDomElBySel = (selector) => document.querySelector(`${selector}`);
 const getDomEls = (selector) => document.querySelectorAll(`${selector}`);
 
 const createDomEl = (el) => document.createElement(el);
-const addID = (id, el) => (el.id = id);
-const addClass = (name, el) => el.classList.add(name);
-const removeClass = (name, el) => el.classList.remove(name);
-const setAttr = (attr, value, el) => el.setAttribute(attr, value);
-const appendChild = (child, el) => el.appendChild(child);
-const addContent = (content, el) => el.innerHTML(content);
+const addID = curry((id, el) => (el.id = id));
+const addClass = curry((name, el) => el.classList.add(name));
+const removeClass = curry((name, el) => el.classList.remove(name));
+const setAttr = curry((attr, value, el) => el.setAttribute(attr, value));
+const appendChild = curry((child, el) => el.appendChild(child));
+const addContent = curry((content, el) => el.innerHTML(content));
 
-const on = (event, el, fn) => el.addEventListener(event, fn);
+const on = curry((event, el, fn) => el.addEventListener(event, fn));
 
 const favSectionContainer = document.getElementById("fav-section-container");
 const btnScrollLeft = document.getElementById("btn-scroll-left");
@@ -98,14 +102,16 @@ const appendSearch = debounce(async (term) => {
     btn.addEventListener("click", (e) => {
       if (e.currentTarget.classList.contains("fa-regular")) {
         const id = e.currentTarget.closest(".recipe").id;
+        const fetchData = fetchFromLS();
         appendFav(id);
-        addToLS(id);
+        addToLS(id, fetchData);
         e.currentTarget.classList.remove("fa-regular");
         e.currentTarget.classList.add("fa-solid");
       } else {
         const id = e.currentTarget.closest(".recipe").id;
+        const fetchData = fetchFromLS();
         removeFromFav(id);
-        removeFromLS(id);
+        removeFromLS(id, fetchData);
         e.currentTarget.classList.remove("fa-solid");
         e.currentTarget.classList.add("fa-regular");
       }
@@ -142,14 +148,16 @@ const appendRandom = async () => {
   favBtn.addEventListener("click", (e) => {
     if (e.currentTarget.classList.contains("fa-regular")) {
       const id = e.currentTarget.closest(".recipe").id;
+      const fetchData = fetchFromLS();
       appendFav(id);
-      addToLS(id);
+      addToLS(id, fetchData);
       e.currentTarget.classList.remove("fa-regular");
       e.currentTarget.classList.add("fa-solid");
     } else {
       const id = e.currentTarget.closest(".recipe").id;
+      const fetchData = fetchFromLS();
       removeFromFav(id);
-      removeFromLS(id);
+      removeFromLS(id, fetchData);
       e.currentTarget.classList.remove("fa-solid");
       e.currentTarget.classList.add("fa-regular");
     }
@@ -179,9 +187,10 @@ const appendFav = async (id) => {
 
   const btnRemove = favRecipe.querySelector(".btn-remove");
   btnRemove.addEventListener("click", (e) => {
+    const fetchData = fetchFromLS();
     removeFromFav(id);
     removeFromRecipes(id);
-    removeFromLS(id);
+    removeFromLS(id, fetchData);
   });
 
   favSectionContainer.appendChild(favRecipe);
@@ -233,45 +242,7 @@ const removeFromRecipes = (id) => {
   }
 };
 
-// ****** LOCAL STORAGE ******
-
-const fetchFromLS = () => {
-  const values = JSON.parse(localStorage.getItem("recipeIDs"));
-
-  return values;
-};
-
-const addToLS = (id) => {
-  let values;
-
-  if (!localStorage.getItem("recipeIDs")) {
-    values = [];
-  } else {
-    values = JSON.parse(localStorage.getItem("recipeIDs"));
-  }
-
-  values.push(id);
-
-  localStorage.setItem("recipeIDs", JSON.stringify(values));
-};
-
-const removeFromLS = (id) => {
-  let values = JSON.parse(localStorage.getItem("recipeIDs"));
-  const newValues = values.filter((value) => value !== id);
-
-  localStorage.setItem("recipeIDs", JSON.stringify(newValues));
-};
-
-const appendFavFromLS = () => {
-  const values = fetchFromLS();
-
-  if (values) {
-    for (const value of values) {
-      appendFav(value);
-    }
-  }
-};
-
 window.addEventListener("DOMContentLoaded", () => {
-  appendFavFromLS();
+  const fetchData = fetchFromLS();
+  appendFavFromLS(fetchData);
 });

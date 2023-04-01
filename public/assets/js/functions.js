@@ -27,6 +27,15 @@ export const debounce = (cb, delay = 1000) => {
   };
 };
 
+export const isOverflown = (element) => {
+  return (
+    element.scrollHeight > element.clientHeight ||
+    element.scrollWidth > element.clientWidth
+  );
+};
+
+// ****** LOCAL STORAGE ******
+
 export const fetchRecipes = async (url) => {
   const resp = await fetch(url);
   const data = await resp.json();
@@ -34,9 +43,34 @@ export const fetchRecipes = async (url) => {
   return data.meals;
 };
 
-export const isOverflown = (element) => {
-  return (
-    element.scrollHeight > element.clientHeight ||
-    element.scrollWidth > element.clientWidth
-  );
+export const fetchFromLS = () => {
+  const values = JSON.parse(localStorage.getItem("recipeIDs"));
+
+  return values;
+};
+
+export const addToLS = (id, values) => {
+  values.push(id);
+
+  localStorage.setItem("recipeIDs", JSON.stringify(values));
+
+  return values;
+};
+
+export const removeFromLS = (id, values) => {
+  const newValues = values.filter((value) => value !== id);
+
+  localStorage.setItem("recipeIDs", JSON.stringify(newValues));
+
+  return values;
+};
+
+export const appendFavFromLS = (values) => {
+  if (values) {
+    for (const value of values) {
+      appendFav(value);
+    }
+  }
+
+  return values;
 };
