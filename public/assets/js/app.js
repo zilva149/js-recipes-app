@@ -7,33 +7,30 @@ Object.entries(exports).forEach(
   ([name, exported]) => (window[name] = exported)
 );
 
-const favSectionContainer = getDomElByID("fav-section-container");
-const btnScrollLeft = getDomElByID("btn-scroll-left");
-const btnScrollRight = getDomElByID("btn-scroll-right");
+on(
+  "click",
+  getDomElByID("btn-scroll-right"),
+  (e) => (e.currentTarget.parentElement.scrollLeft += 300)
+);
 
-on("click", btnScrollRight, () => (favSectionContainer.scrollLeft += 300));
-on("click", btnScrollLeft, () => (favSectionContainer.scrollLeft -= 300));
+on(
+  "click",
+  getDomElByID("btn-scroll-left"),
+  () => (e.currentTarget.parentElement.scrollLeft -= 300)
+);
 
 // ****** RECIPES ******
-
-const btnShowRandom = getDomElByID("btn-show-random");
-const recipeOfTheDay = getDomElBySel(".recipe-of-the-day", document);
-const recipesSection = getDomElByID("recipes-section");
-const searchInput = getDomElByID("search");
 
 const appendSearch = debounce(async (term) => {
   const data = await fetchRecipes(
     "https://www.themealdb.com/api/json/v1/1/search.php?s=" + term
   );
 
+  const recipesSection = getDomElByID("recipes-section");
+
   let HTML = "";
 
-  if (term === "") {
-    HTML += `
-        <div class="empty-list">
-            <span>Enter input to search for your favorite recipes.</span>
-        </div>`;
-  } else if (!data) {
+  if (!data) {
     HTML += `
         <div class="empty-list">
             <span>No recipes found.</span>
@@ -61,29 +58,31 @@ const appendSearch = debounce(async (term) => {
   for (const favID of dataLS) {
     for (const recipe of recipes) {
       if (recipe.id === favID) {
-        const btn = recipe.querySelector(".fa-heart");
-        btn.classList.remove("fa-regular");
-        btn.classList.add("fa-solid");
+        const btn = getDomElBySel(".fa-heart", recipe);
+        removeClass("fa-regular", btn);
+        addClass("fa-solid", btn);
       }
     }
   }
 
   favBtns.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
+    on("click", btn, (e) => {
       if (e.currentTarget.classList.contains("fa-regular")) {
         const id = e.currentTarget.closest(".recipe").id;
         const fetchData = fetchFromLS();
+
         appendFavRecipe(id);
         addToLS(id, fetchData);
-        e.currentTarget.classList.remove("fa-regular");
-        e.currentTarget.classList.add("fa-solid");
+        removeClass("fa-regular", e.currentTarget);
+        addClass("fa-solid", e.currentTarget);
       } else {
         const id = e.currentTarget.closest(".recipe").id;
         const fetchData = fetchFromLS();
+
         removeFromFav(id);
         removeFromLS(id, fetchData);
-        e.currentTarget.classList.remove("fa-solid");
-        e.currentTarget.classList.add("fa-regular");
+        removeClass("fa-solid", e.currentTarget);
+        addClass("fa-regular", e.currentTarget);
       }
     });
   });
@@ -94,93 +93,59 @@ const appendRandom = async () => {
     "https://www.themealdb.com/api/json/v1/1/random.php"
   );
 
-  btnShowRandom.classList.add("hidden");
-  recipeOfTheDay.classList.remove("hidden");
+  const recipeOfTheDay = getDomElBySel(".recipe-of-the-day", document);
+  const btnShowRandom = getDomElByID("btn-show-random");
 
-  recipeOfTheDay.id = data[0].idMeal;
+  addClass("hidden", btnShowRandom);
+  removeClass("hidden", recipeOfTheDay);
 
-  recipeOfTheDay.innerHTML = `
+  addID(data[0].idMeal, recipeOfTheDay);
+
+  addContent(
+    `
             <img src="${data[0].strMealThumb}" alt="${data[0].strMeal}" />
             <div class="recipe-footer">
               <h5>${data[0].strMeal}</h5>
               <i class="fa-regular fa-heart"></i>
-            </div>`;
+            </div>`,
+    recipeOfTheDay
+  );
 
-  const favBtn = recipeOfTheDay.querySelector(".fa-heart");
-
+  const favBtn = getDomElBySel(".fa-heart", recipeOfTheDay);
   const dataLS = fetchFromLS();
 
   for (const favID of dataLS) {
     if (favID === data[0].idMeal) {
-      favBtn.classList.remove("fa-regular");
-      favBtn.classList.add("fa-solid");
+      removeClass("fa-regular", favBtn);
+      addClass("fa-solid", favBtn);
     }
   }
 
-  favBtn.addEventListener("click", async (e) => {
-    if (e.currentTarget.classList.contains("fa-regular")) {
-      const id = e.currentTarget.closest(".recipe").id;
-      const fetchData = fetchFromLS();
+  on("click", favBtn, async (e) => {
+    const id = getClosest(".recipe", e.currentTarget).id;
+    const fetchData = fetchFromLS();
+
+    if (hasClass("fa-regular", e.currentTarget)) {
       appendFavRecipe(id);
       addToLS(id, fetchData);
-      e.currentTarget.classList.remove("fa-regular");
-      e.currentTarget.classList.add("fa-solid");
+      removeClass("fa-regular", e.currentTarget);
+      addClass("fa-solid", e.currentTarget);
     } else {
-      const id = e.currentTarget.closest(".recipe").id;
-      const fetchData = fetchFromLS();
       removeFromFav(id);
       removeFromLS(id, fetchData);
-      e.currentTarget.classList.remove("fa-solid");
-      e.currentTarget.classList.add("fa-regular");
+      removeClass("fa-solid", e.currentTarget);
+      addClass("fa-regular", e.currentTarget);
     }
   });
 };
 
-on("click", btnShowRandom, () => {
+on("click", getDomElByID("btn-show-random"), () => {
   appendRandom();
 });
 
-on("input", searchInput, (e) => {
+on("input", getDomElByID("search"), (e) => {
   appendSearch(e.currentTarget.value);
 });
-
-const removeFromFav = (id) => {
-  const favRecipes = favSectionContainer.children;
-
-  for (const recipe of favRecipes) {
-    if (recipe.id === id) {
-      favSectionContainer.removeChild(recipe);
-    }
-  }
-
-  if (isOverflown(favSectionContainer)) {
-    btnScrollLeft.classList.add("show");
-    btnScrollRight.classList.add("show");
-  } else {
-    btnScrollLeft.classList.remove("show");
-    btnScrollRight.classList.remove("show");
-  }
-};
-
-const removeFromRecipes = (id) => {
-  if (recipeOfTheDay.id === id) {
-    const btn = recipeOfTheDay.querySelector(".fa-heart");
-
-    btn.classList.remove("fa-solid");
-    btn.classList.add("fa-regular");
-  }
-
-  const searchRecipes = recipesSection.children;
-
-  for (const child of searchRecipes) {
-    if (child.id === id) {
-      const btn = child.querySelector(".fa-heart");
-
-      btn.classList.remove("fa-solid");
-      btn.classList.add("fa-regular");
-    }
-  }
-};
 
 on("DOMContentLoaded", window, () => {
   const fetchData = fetchFromLS();

@@ -51,6 +51,14 @@ export const removeClass = (name, el) => {
   return el;
 };
 
+export const hasClass = (name, el) => {
+  return el.classList.contains(name);
+};
+
+export const getClosest = (selector, el) => {
+  return el.closest(selector);
+};
+
 export const setAttr = (attr, value, el) => {
   el.setAttribute(attr, value);
   return el;
@@ -58,6 +66,11 @@ export const setAttr = (attr, value, el) => {
 
 export const appendChild = (child, el) => {
   el.appendChild(child);
+  return el;
+};
+
+export const removeChild = (child, el) => {
+  el.removeChild(child);
   return el;
 };
 
@@ -116,20 +129,58 @@ export const createFavRecipe = async (id) => {
 };
 
 export const appendFavRecipe = async (id) => {
-  const favRecipe = await createFavRecipe(id);
-
   const favSectionContainer = getDomElByID("fav-section-container");
-  const btnScrollLeft = getDomElByID("btn-scroll-left");
-  const btnScrollRight = getDomElByID("btn-scroll-right");
+  const favRecipe = await createFavRecipe(id);
 
   appendChild(favRecipe, favSectionContainer);
 
   if (isOverflown(favSectionContainer)) {
-    addClass("show", btnScrollLeft);
-    addClass("show", btnScrollRight);
+    addClass("show", getDomElByID("btn-scroll-left"));
+    addClass("show", getDomElByID("btn-scroll-right"));
   } else {
-    removeClass("show", btnScrollLeft);
-    removeClass("show", btnScrollRight);
+    removeClass("show", getDomElByID("btn-scroll-left"));
+    removeClass("show", getDomElByID("btn-scroll-right"));
+  }
+};
+
+export const removeFromFav = (id) => {
+  const favSectionContainer = getDomElByID("fav-section-container");
+  const favRecipes = favSectionContainer.children;
+
+  for (const recipe of favRecipes) {
+    if (recipe.id === id) {
+      removeChild(recipe, getDomElByID("fav-section-container"));
+    }
+  }
+
+  if (isOverflown(favSectionContainer)) {
+    addClass("show", getDomElByID("btn-scroll-left"));
+    addClass("show", getDomElByID("btn-scroll-right"));
+  } else {
+    removeClass("show", getDomElByID("btn-scroll-left"));
+    removeClass("show", getDomElByID("btn-scroll-right"));
+  }
+};
+
+export const removeFromRecipes = (id) => {
+  const recipeOfTheDay = getDomElBySel(".recipe-of-the-day", document);
+
+  if (recipeOfTheDay.id === id) {
+    const btn = getDomElBySel(".fa-heart", recipeOfTheDay);
+
+    removeClass("fa-solid", btn);
+    addClass("fa-regular", btn);
+  }
+
+  const searchRecipes = getDomElByID("recipes-section").children;
+
+  for (const child of searchRecipes) {
+    if (child.id === id) {
+      const btn = getDomElBySel(".fa-heart", child);
+
+      removeClass("fa-solid", btn);
+      addClass("fa-regular", btn);
+    }
   }
 };
 
